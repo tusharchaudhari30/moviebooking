@@ -2,6 +2,7 @@ package com.moviebooking.moviebookingapp.controller;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,13 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.moviebooking.moviebookingapp.exception.UserCustomException;
 import com.moviebooking.moviebookingapp.model.Movie;
 import com.moviebooking.moviebookingapp.model.Ticket;
 import com.moviebooking.moviebookingapp.model.User;
 import com.moviebooking.moviebookingapp.model.dto.ToastMessage;
 import com.moviebooking.moviebookingapp.service.AuthenticationService;
 import com.moviebooking.moviebookingapp.service.MovieBookingService;
+
+import jakarta.websocket.server.PathParam;
 
 @RequestMapping("/api/v1.0/moviebooking")
 @Validated
@@ -66,6 +68,16 @@ public class MovieBookingController {
     public ToastMessage bookTicketsForMovie(@PathVariable String movieid, @RequestBody Ticket ticket,
             @RequestHeader("Authorization") String token) {
         return movieBookingService.bookTicketsForMovie(movieid, ticket, token);
+    }
+
+    @GetMapping("/movie/{id}")
+    public Optional<Movie> getMoviesById(@PathVariable String id) {
+        return movieBookingService.getMovieById(id);
+    }
+
+    @PostMapping("/movie")
+    public List<Movie> updateMovie(@RequestBody Movie movie, @RequestHeader("Authorization") String token) {
+        return movieBookingService.updateMovieDetails(movie, token);
     }
 
     @PutMapping("/{movieId}/update/{ticket}")

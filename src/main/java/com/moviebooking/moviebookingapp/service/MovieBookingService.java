@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import javax.xml.validation.Validator;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -87,4 +89,50 @@ public class MovieBookingService {
         log.info("Movie deleted with ID: {}", id);
         return new ToastMessage("Movie deleted successfully.");
     }
+
+    public Optional<Movie> getMovieById(String id) {
+        return movieRepository.findById(id);
+    }
+
+    public List<Movie> updateMovieDetails(Movie movie, String token) {
+        User user = authenticationService.validate(token);
+        if (!"Admin".equals(user.getType())) {
+            log.error("User is not admin. Access denied.");
+            throw new UserCustomException("User is not admin");
+        }
+        if (movie.getName() == null || movie.getName().isEmpty()) {
+            throw new UserCustomException("Movie name is required.");
+        }
+
+        if (movie.getReleaseDate() == null || movie.getReleaseDate().isEmpty()) {
+            throw new UserCustomException("Release date is required.");
+        }
+
+        if (movie.getDisplayUrl() == null || movie.getDisplayUrl().isEmpty()) {
+            throw new UserCustomException("Display URL is required.");
+        }
+
+        if (movie.getDescription() == null || movie.getDescription().isEmpty()) {
+            throw new UserCustomException("Description is required.");
+        }
+
+        if (movie.getTheatreName() == null || movie.getTheatreName().isEmpty()) {
+            throw new UserCustomException("Theatre name is required.");
+        }
+
+        if (movie.getTicketBooked() == null) {
+            throw new UserCustomException("Ticket booked count is required.");
+        }
+
+        if (movie.getTotalTicket() == null) {
+            throw new UserCustomException("Total ticket count is required.");
+        }
+
+        if (movie.getPrice() == null) {
+            throw new UserCustomException("Price is required.");
+        }
+        movieRepository.save(movie);
+        return movieRepository.findAll();
+    }
+
 }

@@ -18,4 +18,5 @@ public class Movie {
     private String theatreName;
     private Integer ticketBooked;
     private Integer totalTicket;
+    private Integer price;
 }
