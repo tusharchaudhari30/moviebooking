@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Navbar = (props) => {
   const checkUserAuthenticated = (component) => {
@@ -22,14 +23,14 @@ const Navbar = (props) => {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ml-auto">
               <li className="nav-item">
-                <a className="nav-link" href="/">
+                <Link className="nav-link" to="/">
                   Movies
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="/bookings">
+                <Link className="nav-link" to="/bookings">
                   Bookings
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -50,9 +51,9 @@ const Navbar = (props) => {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ml-auto">
               <li className="nav-item">
-                <a className="nav-link" href="/">
+                <Link className="nav-link" to="/">
                   Movies
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

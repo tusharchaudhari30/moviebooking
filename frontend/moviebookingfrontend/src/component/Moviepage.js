@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const MoviePage = () => {
   const [movies, setMovies] = useState([]);
@@ -77,20 +78,20 @@ const MoviePage = () => {
           {movies.map((movie) => (
             <div key={movie.id} className="col-md-3 mb-3">
               <div className="card">
-                <a href={"/movie/" + movie.id}>
+                <Link to={"/movie/" + movie.id}>
                   <img
                     src={movie.displayUrl}
                     className="card-img-top"
                     alt={movie.name} // Adjust image size as needed
                   />
-                </a>
+                </Link>
                 <div className="card-body d-flex flex-column">
-                  <a
-                    href={"/movie/" + movie.id}
+                  <Link
+                    to={"/movie/" + movie.id}
                     className="btn btn-primary mt-auto"
                   >
                     Book
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>

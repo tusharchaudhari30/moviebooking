@@ -18,7 +18,7 @@ const hideModal = (ref) => {
   bsModal.hide();
 };
 
-const MovieDescriptionPage = () => {
+const MovieDescriptionPage = (props) => {
   const [movie, setMovie] = useState([]);
   let { movieid } = useParams();
   const ticketModelRef = useRef();
@@ -85,7 +85,13 @@ const MovieDescriptionPage = () => {
             {movie.ticketBooked < movie.totalTicket && (
               <button
                 className="btn btn-primary"
-                onClick={() => showModal(ticketModelRef)}
+                onClick={() => {
+                  if (props.userAuthenticated === "") {
+                    props.showLogin();
+                  } else {
+                    showModal(ticketModelRef);
+                  }
+                }}
               >
                 Book Tickets
               </button>

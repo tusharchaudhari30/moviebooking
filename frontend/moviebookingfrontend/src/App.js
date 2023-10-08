@@ -49,19 +49,21 @@ function App() {
       return (
         <React.Fragment>
           <Route path="/" element={<MoviePage />} />
-          <Route path="/movie/:movieid" element={<MovieDescriptionPage />} />
+          <Route
+            path="/movie/:movieid"
+            element={
+              <MovieDescriptionPage
+                userAuthenticated={userAuthenticated}
+                showLogin={() => showModal(loginModalRef)}
+              />
+            }
+          />
         </React.Fragment>
       );
     }
   };
   return (
     <div>
-      <Navbar
-        showModal={() => showModal(loginModalRef)}
-        userAuthenticated={userAuthenticated}
-        setUserAuthenticated={setUserAuthenticated}
-      />
-
       <LoginModal
         refLogin={loginModalRef}
         openSignup={() => {
@@ -75,6 +77,11 @@ function App() {
         hideModal={() => hideModal(signupModalRef)}
       />
       <BrowserRouter>
+        <Navbar
+          showModal={() => showModal(loginModalRef)}
+          userAuthenticated={userAuthenticated}
+          setUserAuthenticated={setUserAuthenticated}
+        />
         <Routes>{loadRoutes()}</Routes>
       </BrowserRouter>
     </div>
