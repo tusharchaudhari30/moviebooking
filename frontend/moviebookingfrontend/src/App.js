@@ -1,14 +1,15 @@
 import "./App.css";
 import * as bootstrap from "bootstrap";
-import React, { useRef, useState } from "react";
-import MoviePage from "./component/Moviepage";
-import MovieDescriptionPage from "./component/MovieDescriptionPage";
+import React, { useEffect, useRef, useState } from "react";
+import MoviePage from "./component/home/Moviepage";
+import MovieDescriptionPage from "./component/moviebooking/MovieDescriptionPage";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Navbar from "./component/Navbar";
-import LoginModal from "./component/LoginModal";
-import SignupModal from "./component/SignupModal";
-import BookingPage from "./component/BookingPage";
-import AdminPage from "./component/AdminPage";
+import Navbar from "./component/home/Navbar";
+import LoginModal from "./component/home/LoginModal";
+import SignupModal from "./component/home/SignupModal";
+import BookingPage from "./component/moviebooking/BookingPage";
+import AdminPage from "./component/admin/AdminPage";
+import { verifyLogin } from "./component/restclient/MovieBookingClient";
 
 const showModal = (ref) => {
   const modalEle = ref.current;
@@ -26,10 +27,24 @@ const hideModal = (ref) => {
 };
 
 function App() {
-  const [userAuthenticated, setUserAuthenticated] = useState("User");
+  const [userAuthenticated, setUserAuthenticated] = useState("");
+  const [token, setToken] = useState("");
   const loginModalRef = useRef();
   const signupModalRef = useRef();
-
+  const updateUser = () => {
+    verifyLogin()
+      .then((res) => res.json())
+      .then((body) => {
+        if (body.statuscode === "UNAUTHORIZED") {
+          setUserAuthenticated("");
+        } else {
+          setUserAuthenticated(body.type);
+        }
+      });
+  };
+  useEffect(() => {
+    updateUser();
+  }, [token]);
   const loadRoutes = () => {
     if (userAuthenticated === "Admin") {
       return (
@@ -71,6 +86,7 @@ function App() {
           showModal(signupModalRef);
         }}
         hideModal={() => hideModal(loginModalRef)}
+        setToken={setToken}
       />
       <SignupModal
         refSignup={signupModalRef}

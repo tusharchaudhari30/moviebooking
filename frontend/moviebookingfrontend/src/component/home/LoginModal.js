@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-
+import { loginUser } from "../restclient/MovieBookingClient";
+import { toast } from "react-toastify";
 const LoginModal = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,8 +26,18 @@ const LoginModal = (props) => {
     if (Object.keys(errors).length > 0) {
       // Display error messages
     } else {
-      // Perform login logic here
-      // If validation is successful, you can close the modal
+      loginUser(email, password)
+        .then((res) => res.json())
+        .then((body) => {
+          if (body.statuscode === "UNAUTHORIZED") {
+            toast.error(body.message);
+          } else {
+            toast.success("Login Successfully.");
+          }
+          props.setToken(body.token);
+          localStorage.setItem("token", body.token);
+          console.log(body);
+        });
       props.hideModal();
     }
   };

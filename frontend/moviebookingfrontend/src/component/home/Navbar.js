@@ -10,7 +10,10 @@ const Navbar = (props) => {
             <button
               className="btn btn-outline-primary"
               type="button"
-              onClick={() => props.setUserAuthenticated("")}
+              onClick={() => {
+                localStorage.removeItem("token");
+                props.setUserAuthenticated("");
+              }}
             >
               Logout
             </button>
@@ -38,7 +41,10 @@ const Navbar = (props) => {
             <button
               className="btn btn-outline-primary"
               type="button"
-              onClick={() => props.setUserAuthenticated("")}
+              onClick={() => {
+                localStorage.removeItem("token");
+                props.setUserAuthenticated("");
+              }}
             >
               Logout
             </button>
