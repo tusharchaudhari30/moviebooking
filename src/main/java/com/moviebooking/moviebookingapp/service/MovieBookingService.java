@@ -54,9 +54,15 @@ public class MovieBookingService {
             log.error("Movie not found with ID: {}", movieId);
             throw new UserCustomException("Movie not Found :" + movieId);
         }
-        ticket.setTheatreName(movie.get().getName());
+        ticket.setPrice(movie.get().getPrice() * ticket.getNumberOfTickets());
+        ticket.setTheatreName(movie.get().getTheatreName());
         ticket.setMovieId(movie.get().getId());
+        ticket.setMovieName(movie.get().getName());
+        ticket.setDisplayUrl(movie.get().getDisplayUrl());
         ticketRepository.save(ticket);
+        Movie movie2 = movie.get();
+        movie2.setTicketBooked(movie2.getTicketBooked() + ticket.getNumberOfTickets());
+        movieRepository.save(movie2);
         log.info("Ticket booked successfully for movie: {}", movie.get().getName());
         return new ToastMessage("Ticket Booked Successfully.");
     }
@@ -133,6 +139,15 @@ public class MovieBookingService {
         }
         movieRepository.save(movie);
         return movieRepository.findAll();
+    }
+
+    public List<Ticket> getTicketListByUser(String token) {
+        User user = authenticationService.validate(token);
+        if ("Admin".equals(user.getType())) {
+            log.error("User is admin. Access denied.");
+            throw new UserCustomException("User is admin.");
+        }
+        return ticketRepository.findByUserId(user.getId());
     }
 
 }

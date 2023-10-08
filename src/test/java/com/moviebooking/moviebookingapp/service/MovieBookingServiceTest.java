@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest()
@@ -71,14 +72,23 @@ public class MovieBookingServiceTest {
         String token = "valid-token";
         User user = new User();
         user.setId("user-1");
+
+        // Mock authenticationService
         when(authenticationService.validate(token)).thenReturn(user);
-        when(movieRepository.findById(movieId)).thenReturn(Optional.of(new Movie()));
+
+        // Mock movieRepository
+        Movie movie = new Movie(); // Create a mock Movie object
+        movie.setPrice(10); // Set the price for the movie
+        movie.setTicketBooked(50);
+        movie.setTotalTicket(100);
+        when(movieRepository.findById(movieId)).thenReturn(Optional.of(movie));
+        when(ticketRepository.save(any(Ticket.class))).thenReturn(new Ticket()); // Mock the save method
         var toastMessage = movieBookingService.bookTicketsForMovie(movieId, ticket, token);
         assertNotNull(toastMessage);
         assertEquals("Ticket Booked Successfully.", toastMessage.getMessage());
         verify(authenticationService, times(1)).validate(token);
         verify(movieRepository, times(1)).findById(movieId);
-        verify(ticketRepository, times(1)).save(ticket);
+        verify(ticketRepository, times(1)).save(any(Ticket.class));
     }
 
     @Test
@@ -86,9 +96,7 @@ public class MovieBookingServiceTest {
         String movieId = "1";
         Ticket ticket = new Ticket();
         String token = "valid-token";
-
         assertThrows(UserCustomException.class, () -> movieBookingService.bookTicketsForMovie(movieId, ticket, token));
-
         verify(authenticationService, times(1)).validate(token);
         verify(movieRepository, never()).findById(movieId);
         verify(ticketRepository, never()).save(ticket);

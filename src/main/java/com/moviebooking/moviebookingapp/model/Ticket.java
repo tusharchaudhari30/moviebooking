@@ -13,7 +13,11 @@ public class Ticket {
     private String id;
     private String userId;
     private String movieId;
+    private String movieName;
     private String theatreName;
     private int numberOfTickets;
+    private int price;
+    private String displayUrl;
+    private String bookingDate;
 
 }

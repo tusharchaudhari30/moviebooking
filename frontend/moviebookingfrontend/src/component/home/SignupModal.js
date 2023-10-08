@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { signUpUser } from "../restclient/MovieBookingClient";
+import { toast } from "react-toastify";
 
 const SignupModal = (props) => {
   const [firstName, setFirstName] = useState("");
@@ -41,12 +43,8 @@ const SignupModal = (props) => {
       newErrors.contactNumber = "Please Enter Contact Number!";
     }
 
-    // Update the errors state
     setErrors(newErrors);
-
-    // If there are no errors, perform signup logic
     if (Object.keys(newErrors).length === 0) {
-      // Gather user details and send to backend for registration
       const userDetails = {
         firstName,
         lastName,
@@ -54,10 +52,13 @@ const SignupModal = (props) => {
         password,
         contactNumber,
       };
-      console.log("Signup called with user details:", userDetails);
-      // Send userDetails to your backend API for registration
-
-      // Close the modal
+      signUpUser(userDetails).then((body) => {
+        if (body.statuscode === "UNAUTHORIZED") {
+          toast.error(body.message);
+        } else {
+          toast.success(body.message);
+        }
+      });
       props.hideModal();
     }
   };

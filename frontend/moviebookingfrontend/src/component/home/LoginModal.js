@@ -32,7 +32,7 @@ const LoginModal = (props) => {
           if (body.statuscode === "UNAUTHORIZED") {
             toast.error(body.message);
           } else {
-            toast.success("Login Successfully.");
+            toast.success("Welcome");
           }
           props.setToken(body.token);
           localStorage.setItem("token", body.token);

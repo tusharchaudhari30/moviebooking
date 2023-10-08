@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { saveMovie } from "../restclient/MovieBookingClient";
+import { toast } from "react-toastify";
 
 const EditMovieModal = (props) => {
   const [name, setName] = useState(props.movie.name);
@@ -19,10 +21,8 @@ const EditMovieModal = (props) => {
     setTicketBooked(props.movie.ticketBooked);
     setTotalTicket(props.movie.totalTicket);
     setPrice(props.movie.price);
-    setDisplayUrl(props.movie.displayUrl); // Update displayUrl state
+    setDisplayUrl(props.movie.displayUrl);
   }, [props.movie]);
-
-  // Validation function
   const validateForm = () => {
     const errors = {};
 
@@ -59,15 +59,11 @@ const EditMovieModal = (props) => {
     }
 
     setErrors(errors);
-
-    // Check if there are any validation errors
     return Object.keys(errors).length === 0;
   };
 
   const handleUpdate = () => {
-    // Validate the form before updating
     if (validateForm()) {
-      // Gather updated movie details
       const updatedMovie = {
         id: props.movie.id,
         name,
@@ -77,14 +73,11 @@ const EditMovieModal = (props) => {
         ticketBooked,
         totalTicket,
         price,
-        displayUrl, // Include displayUrl in the updated movie object
+        displayUrl,
       };
-      console.log(updatedMovie);
-
-      // Call a function to update the movie with the new details (e.g., an API request)
-      // props.onUpdate(updatedMovie);
-
-      // Close the modal
+      saveMovie(updatedMovie)
+        .then((body) => props.setMovies(body))
+        .then(() => toast.success("Movie save successfully."));
       props.hideModal();
     }
   };

@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { bookTicketById } from "../restclient/MovieBookingClient";
 
 const TicketCountModal = (props) => {
   const [ticketCount, setTicketCount] = useState(1);
-  const [price, setPrice] = useState(props.initialPrice);
-
+  const [price, setPrice] = useState(props.movieTicket.price);
+  const [selectedDate, setSelectedDate] = useState(""); // State for the selected date
+  const minDate = new Date();
+  minDate.setDate(minDate.getDate() + 1);
   useEffect(() => {
-    // Calculate the price based on the selected ticket count and the passed initial price
-    const calculatedPrice = ticketCount * props.initialPrice;
+    const calculatedPrice = ticketCount * props.movieTicket.price;
     setPrice(calculatedPrice);
-  }, [ticketCount, props.initialPrice]);
+  }, [ticketCount, props.movieTicket.price]);
 
   const handleIncrease = () => {
     if (ticketCount < 10) {
@@ -23,12 +25,19 @@ const TicketCountModal = (props) => {
     }
   };
 
+  const handleDateChange = (e) => {
+    setSelectedDate(e.target.value);
+  };
+
   const confirmSelection = () => {
-    // You can use the selected ticketCount and price here
-    console.log(`Selected ticket count: ${ticketCount}`);
-    console.log(`Total price: $${price}`);
-    toast.success("Ticket Booked Successfully.");
-    // Close the modal or perform any other necessary actions
+    if (selectedDate === "") {
+      toast.error("Please select a valid date!");
+      return;
+    }
+
+    bookTicketById(props.movieTicket.id, ticketCount, selectedDate).then(
+      (body) => toast.success(body.message)
+    );
     props.hideModal();
   };
 
@@ -48,6 +57,17 @@ const TicketCountModal = (props) => {
               ></button>
             </div>
             <div className="modal-body">
+              <div className="form-group">
+                <label htmlFor="date">Select Date:</label>
+                <input
+                  type="date"
+                  id="date"
+                  className="form-control"
+                  value={selectedDate}
+                  onChange={handleDateChange}
+                  min={minDate.toISOString().split("T")[0]} // Set min attribute to today's date
+                />
+              </div>
               <div className="form-group">
                 <label htmlFor="ticketCount">Ticket Count:</label>
                 <div className="d-flex justify-content-center align-items-center">

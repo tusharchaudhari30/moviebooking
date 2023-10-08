@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import * as bootstrap from "bootstrap";
 import TicketCountModal from "./TicketCountModal";
+import { getMovieById } from "../restclient/MovieBookingClient";
 
 const showModal = (ref) => {
   const modalEle = ref.current;
@@ -24,21 +25,7 @@ const MovieDescriptionPage = (props) => {
   const ticketModelRef = useRef();
 
   useEffect(() => {
-    console.log(movieid);
-    const selectedMovie = {
-      id: "",
-      name: "Avatar",
-      releaseDate: "2022-04-20",
-      displayUrl:
-        "https://resizing.flixster.com/f0bXqQUdQ0m6fyqZjI1OXSEia9E=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzLzEzYmY3ZmZiLWMzYjEtNDQxMy05NTAxLTc2YTRlNmE3NWY2MC5qcGc=",
-      description:
-        "Jake Sully lives with his newfound family formed on the extrasolar moon Pandora. Once a familiar threat returns to finish what was previously started, Jake must work with Neytiri and the army of the Na'vi race to protect their home.",
-      theatreName: "Galaxy Cinemas",
-      ticketBooked: 75,
-      totalTicket: 120,
-      price: 15,
-    };
-    setMovie(selectedMovie);
+    getMovieById(movieid).then((body) => setMovie(body));
   }, [movieid]);
 
   // Determine the status based on the available tickets
@@ -59,7 +46,7 @@ const MovieDescriptionPage = (props) => {
       <TicketCountModal
         refTicketCount={ticketModelRef}
         hideModal={() => hideModal(ticketModelRef)}
-        initialPrice={movie.price}
+        movieTicket={movie}
       />
       <div className="container card p-3 mt-5">
         <h1>{movie.name}</h1>
@@ -80,6 +67,9 @@ const MovieDescriptionPage = (props) => {
             </p>
             <p>
               <strong>Theatre:</strong> {movie.theatreName}
+            </p>
+            <p>
+              <strong>Price :</strong> {movie.price} $
             </p>
             <p>{getStatus()}</p>
             {movie.ticketBooked < movie.totalTicket && (

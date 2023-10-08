@@ -89,4 +89,9 @@ public class MovieBookingController {
         return movieBookingService.deleteMovie(id, token);
     }
 
+    @GetMapping("/user/booking")
+    public List<Ticket> getTicketByUser(@RequestHeader("Authorization") String token) {
+        return movieBookingService.getTicketListByUser(token);
+    }
+
 }
