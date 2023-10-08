@@ -44,16 +44,22 @@ public class MovieBookingService {
 
     public ToastMessage bookTicketsForMovie(String movieId, Ticket ticket, String token) {
         User user = authenticationService.validate(token);
-        if (Objects.isNull(ticket.getNumberOfTickets()) || ticket.getNumberOfTickets() == 0) {
+        if (Objects.isNull(ticket.getNumberOfTickets()) || ticket.getNumberOfTickets() <= 0) {
             log.error("Invalid number of tickets provided.");
-            throw new UserCustomException("Please Enter Number of tickets");
+            throw new UserCustomException("Please Enter a valid number of tickets");
         }
         Optional<Movie> movie = movieRepository.findById(movieId);
-        ticket.setUserId(user.getId());
         if (movie.isEmpty()) {
             log.error("Movie not found with ID: {}", movieId);
-            throw new UserCustomException("Movie not Found :" + movieId);
+            throw new UserCustomException("Movie not Found: " + movieId);
         }
+        int availableTickets = movie.get().getTotalTicket() - movie.get().getTicketBooked();
+
+        if (ticket.getNumberOfTickets() > availableTickets) {
+            log.error("Not enough tickets available for booking.");
+            throw new UserCustomException("Not enough tickets available for booking.");
+        }
+        ticket.setUserId(user.getId());
         ticket.setPrice(movie.get().getPrice() * ticket.getNumberOfTickets());
         ticket.setTheatreName(movie.get().getTheatreName());
         ticket.setMovieId(movie.get().getId());

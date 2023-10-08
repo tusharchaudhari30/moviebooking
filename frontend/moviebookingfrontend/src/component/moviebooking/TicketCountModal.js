@@ -5,7 +5,7 @@ import { bookTicketById } from "../restclient/MovieBookingClient";
 const TicketCountModal = (props) => {
   const [ticketCount, setTicketCount] = useState(1);
   const [price, setPrice] = useState(props.movieTicket.price);
-  const [selectedDate, setSelectedDate] = useState(""); // State for the selected date
+  const [selectedDate, setSelectedDate] = useState("");
   const minDate = new Date();
   minDate.setDate(minDate.getDate() + 1);
   useEffect(() => {
@@ -36,7 +36,13 @@ const TicketCountModal = (props) => {
     }
 
     bookTicketById(props.movieTicket.id, ticketCount, selectedDate).then(
-      (body) => toast.success(body.message)
+      (body) => {
+        if (body.statuscode === "UNAUTHORIZED") {
+          toast.error(body.message);
+        } else {
+          toast.success(body.message);
+        }
+      }
     );
     props.hideModal();
   };
@@ -65,7 +71,7 @@ const TicketCountModal = (props) => {
                   className="form-control"
                   value={selectedDate}
                   onChange={handleDateChange}
-                  min={minDate.toISOString().split("T")[0]} // Set min attribute to today's date
+                  min={minDate.toISOString().split("T")[0]}
                 />
               </div>
               <div className="form-group">
