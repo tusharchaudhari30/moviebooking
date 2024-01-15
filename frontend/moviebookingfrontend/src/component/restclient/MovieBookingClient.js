@@ -1,4 +1,6 @@
-const baseUrl = "http://localhost:8080/api/v1.0/moviebooking";
+//http://localhost:8080
+const baseUrl =
+  "http://moviebookingapp.ap-south-1.elasticbeanstalk.com/api/v1.0/moviebooking";
 const loginUser = async (email, password) => {
   let requestOptions = {
     method: "GET",
