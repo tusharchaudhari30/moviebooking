@@ -13,3 +13,4 @@ cp frontend/moviebookingfrontend/build/index.html src/main/resources/templates/i
 echo "Files copied successfully"
 echo "building maven"
 ./mvnw clean install
+
